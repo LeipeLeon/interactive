@@ -13,4 +13,4 @@ And ofcourse buy an arduino board!
 Projects:
 ---------
 
-* Philips Moodlight imitation controlled by TouchOSC [PhilipsLedOSC](blob/master/DOC/PhilipsLedOSC.md)
+* Philips Moodlight imitation controlled by TouchOSC [PhilipsLedOSC](interactive/blob/master/DOC/PhilipsLedOSC.md)
