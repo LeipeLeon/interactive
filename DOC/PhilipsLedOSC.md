@@ -28,5 +28,9 @@ WIRING:
 Flow:
 -----
 
-    iPad/iPhone <--> Mac <--> Arduino
+    iPad/iPhone ))  (( Mac <--> Arduino
 
+Pretty picture please:
+----------------------
+
+![Setup](http://gallery.me.com/berl/100028/IMG_1830/web.jpg?ver=129786029900010 "Setup")
