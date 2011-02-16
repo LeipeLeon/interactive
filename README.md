@@ -9,3 +9,8 @@ Download:
 * TouchOSC for iPhone/iPad [http://hexler.net/software/touchosc](http://hexler.net/software/touchosc)
 
 And ofcourse buy an arduino board!
+
+Projects:
+---------
+
+* Philips Moodlight imitation controlled by TouchOSC [PhilipsLedOSC](blob/master/DOC/PhilipsLedOSC.md)

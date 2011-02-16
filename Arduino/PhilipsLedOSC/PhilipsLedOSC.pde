@@ -1,85 +1,74 @@
 /*
+Philips Mood lightning
+Derived from http://www.sparkfun.com/tutorials/152
 
-Philips Mood light
+Control the LED (with Processing/OSC) by a serial command.
 
-RED    ---|>|---/\/\/--+
-GREEN  ---|>|---/\/\/--+
-BLUE   ---|>|---/\/\/--+
-                       |
-GND    ----------+-----+
-                 +
-+5v    ---/\/\/--+
-POT    ----^
+To control LED R G or B send a (byte) message over the serial line in the format of 
+  
+  byte(val)
+  byte(color)
+
+ex:
+  123R
+  72G
+  0B
+
+Because of control caracters below ASCII 127 the value range is 128 - 255.
+this will be mapped to 0 - 255
+
+
+WIRING:
+
+RED    9 ---/\/\/---|>|--+
+GREEN 10 ---/\/\/---|>|--+
+BLUE  11 ---/\/\/---|>|--+
+                         |
+GND      ----------------+
 
 */
 
-#define RED     9  // RED pin of the LED to PWM pin 37 
-#define GREEN  10  // GREEN pin of the LED to PWM pin 36
-#define BLUE   11  // BLUE pin of the LED to PWM pin 35
-#define POT    1   // potentio meter
-#define BUTTON 4   // stepper button
+#define RED     9  // PWM pin 9 
+#define GREEN  10  // PWM pin 10
+#define BLUE   11  // PWM pin 11
+#define BEAT   13  // soldered on LED
 
-#define STEP   30  // step increment value
+// We create a buffer to memorize values from the serial input
+char buff[11] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 
-int brightness = 0; // will be incresed with stepper button 
-int color      = 0; // color of led
-
-String txt;
-
-void setup()
-{
-  pinMode(BUTTON, INPUT); 
-  pinMode(POT,    INPUT); 
-
-  pinMode(RED,    OUTPUT); 
-  pinMode(GREEN,  OUTPUT); 
-  pinMode(BLUE,   OUTPUT); 
-
-  Serial.begin(9600);
-
-  txt = String("");
+void setup() {
+  Serial.begin(9600);      // set serial to 9600 baud rate
+  pinMode(RED,   OUTPUT);
+  pinMode(GREEN, OUTPUT);
+  pinMode(BLUE,  OUTPUT);
 }
 
-void loop() {
-  color = analogRead(POT);
-  setColor(color);
-  delay(50);
+void loop(){
+  if (Serial.available() > 0) { //  Check if there is a new message
+
+    // shift the buffer
+    for (int i=0; i<10; i++) {
+      buff[i]=buff[i+1];
+    }
+
+    // put last recieved byte into the buffer
+    buff[10] = Serial.read();
+
+    if (buff[10] == 'R') {
+      analogWrite(RED,   calculateColor());
+    }
+    if (buff[10] == 'G') {
+      analogWrite(GREEN, calculateColor());
+    }
+    if (buff[10] == 'B') {
+      analogWrite(BLUE,  calculateColor());
+    }
+  }
 }
 
-void setColor(int color) {
-  int r, g, b;
-
-  if (color < 255) {
-    r = color;
-    g = 0;
-    b = 255 - color;
-  } else if (color < 512) {
-    r = 512 - color;
-    g = color - 255;
-    b = 0;
-  } else if (color < 768) {
-    r = 0;
-    g = 768 - color;
-    b = color - 512;
-  } else {
-    r = color - 768;
-    g = 0;
-    b = 1024 - color;
-  } 
-
-  analogWrite(RED,   r);
-  analogWrite(GREEN, g);
-  analogWrite(BLUE,  b);
-
-  Serial.print("C:");
-  Serial.print(color);
-  Serial.print("\tR:");
-  Serial.print(r);
-  Serial.print("\tG:");
-  Serial.print(g);
-  Serial.print("\tB:");
-  Serial.print(b);
-  Serial.println("");
-  
+// retrieve value from previous byte from buffer
+// and map it back to a range from 128-155 to 0 - 255
+int calculateColor() {
+  return int((byte(buff[9]) - 128) * 2);
 }
 
