@@ -1,7 +1,10 @@
 class slider {
-  int xpos, ypos, thesize, p;
+  int xpos, ypos, thesize, p, previous_size;
   boolean slide;
+  boolean toggled = true;
   color c, cb;
+
+  // initializer
   slider (int x, int y, int s, color col) {
     xpos    = x;
     ypos    = y;
@@ -11,10 +14,28 @@ class slider {
     c       = col;
     cb      = color(red(c),green(c),blue(c),150);
   }
+
+  int toggle() {
+    println("POS:" + p);
+    println("POSPREV:" + previous_size);
+    if (toggled) {
+      previous_size = p ;
+      p = 0;
+    } else {
+      p = previous_size;
+    }
+    toggled = ! toggled ;
+    return p*2;
+  }
+
   void setP(int newP) {
     p = newP;
+    previous_size = newP ;
+    toggled = true;
   }
+
   void render() {
+    println("POS:" + p);
     stroke(40);
     strokeWeight(10);
     noFill();
