@@ -96,10 +96,17 @@ void testLoop() {
     // take the row pin (cathode) low:
     digitalWrite(row[thisRow], LOW);
     // iterate over the cols (anodes):
-    for (int thisCol = 0; thisCol < 8; thisCol++) {
+    for (int thisCol = 0; thisCol < 16; thisCol++) {
 
       digitalWrite(latchPin, LOW);
-      shiftOut(dataPin, clockPin, MSBFIRST, ledState[thisCol]);
+      // shift out the bits:
+      if (thisCol < 8) {
+        shiftOut(dataPin, clockPin, MSBFIRST, ledState[thisCol]);
+        shiftOut(dataPin, clockPin, MSBFIRST, 0);
+      } else {
+        shiftOut(dataPin, clockPin, MSBFIRST, 0);
+        shiftOut(dataPin, clockPin, MSBFIRST, ledState[thisCol - 8]);
+      }
       //take the latch pin high so the LEDs will light up:
       digitalWrite(latchPin, HIGH);
       delay(10);
