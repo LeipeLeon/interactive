@@ -15,6 +15,14 @@ int pixels[8][8];
 int x = 5;
 int y = 5;
 
+// SPI communication
+// Pin connected to ST_CP of 74HC595 (12)
+int latchPin = 2;
+// Pin connected to SH_CP of 74HC595 (11)
+int clockPin = 3;
+// Pin connected to DS of 74HC595 (14)
+int dataPin  = 4;
+int ledState[8] = {1, 2, 4, 8, 16, 32, 64, 128 };
 
 void setup() {
   // initialize the serial port:
@@ -27,6 +35,10 @@ void setup() {
     // the LEDS are off: 
     digitalWrite(col[thisPin], LOW);
   }
+
+  pinMode(latchPin, OUTPUT);
+  pinMode(clockPin, OUTPUT);
+  pinMode(dataPin,  OUTPUT);
 
   // initialize the pixel matrix:
   for (int x = 0; x < 8; x++) {
@@ -86,13 +98,12 @@ void testLoop() {
     // iterate over the cols (anodes):
     for (int thisCol = 0; thisCol < 8; thisCol++) {
 
-      // when the col is HIGH and the row is LOW,
-      // the LED where they meet turns on:
-      digitalWrite(col[thisCol], HIGH);
-      // wait a few milliseconds to see it:
-      delay(30);
-      // turn the pixel off:
-      digitalWrite(col[thisCol], LOW);
+      digitalWrite(latchPin, LOW);
+      shiftOut(dataPin, clockPin, MSBFIRST, ledState[thisCol]);
+      //take the latch pin high so the LEDs will light up:
+      digitalWrite(latchPin, HIGH);
+      delay(10);
+
     }
     // take the row pin low to turn off the whole row:
     digitalWrite(row[thisRow], HIGH);
