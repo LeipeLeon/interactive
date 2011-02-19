@@ -9,7 +9,7 @@ const int col[8] = {2,3,4,5,14,15,16,17};
 const int row[8] = {6,7,8,9,10,11,12,13};
 
 // 2-dimensional array of pixels:
-int pixels[8][8];           
+int pixels[8][16];
 
 // cursor position:
 int x = 5;
@@ -26,7 +26,7 @@ int ledState[8] = {1, 2, 4, 8, 16, 32, 64, 128 };
 
 void setup() {
   // initialize the serial port:
-  Serial.begin(9600);
+  // Serial.begin(9600);
   for (int thisPin = 0; thisPin < 8; thisPin++) {
     // initialize the output pins:
     pinMode(col[thisPin], OUTPUT);
@@ -43,19 +43,19 @@ void setup() {
   // initialize the pixel matrix:
   for (int x = 0; x < 8; x++) {
     digitalWrite(row[x], HIGH);
-    digitalWrite(col[x], LOW);
-    for (int y = 0; y < 8; y++) {
+    for (int y = 0; y < 16; y++) {
+      digitalWrite(col[y], LOW);
       pixels[x][y] = LOW;
     }
   }
+  testLoop();
 }
 
 void loop() {
-  testLoop();
 //  // read input:
-//  readSensors();
-//  // draw the screen:
-//  refreshScreen();
+  readSensors();
+  // draw the screen:
+  refreshScreen();
 }
 
 void readSensors() {
@@ -63,31 +63,35 @@ void readSensors() {
   pixels[x][y] = LOW;
   // read the sensors for X and Y values:
   x = 7 - map(analogRead(A4), 0, 1023, 0, 7);
-  y =     map(analogRead(A5), 0, 1023, 0, 7);
+  y =     map(analogRead(A5), 0, 1023, 0, 15);
   pixels[x][y] = HIGH;
 }
 
 void refreshScreen() {
   // iterate over the rows (anodes):
   for (int thisRow = 0; thisRow < 8; thisRow++) {
-    // take the row pin (anode) high:
-    digitalWrite(row[thisRow], HIGH);
-    // iterate over the cols (cathodes):
-    for (int thisCol = 0; thisCol < 8; thisCol++) {
-      // get the state of the current pixel;
-      int thisPixel = pixels[thisRow][thisCol];
-      // when the row is HIGH and the col is LOW,
-      // the LED where they meet turns on:
-      digitalWrite(col[thisCol], thisPixel);
-      // turn the pixel off:
-      if (thisPixel == LOW) {
-        delay(30);
-        digitalWrite(col[thisCol], HIGH);
-      }
-    }
-    // take the row pin low to turn off the whole row:
-    digitalWrite(row[thisRow], LOW);
+
+    digitalWrite(latchPin, LOW);      // ready upt the 74HC595 to receive data
+
+    shiftOut(dataPin, clockPin, MSBFIRST, columnsForMatrix(0, thisRow)); // send data for matrix 1
+    shiftOut(dataPin, clockPin, MSBFIRST, columnsForMatrix(1, thisRow)); // send data for matrix 2
+
+    digitalWrite(row[thisRow], LOW);  // take the row pin (cathodes) low:
+    digitalWrite(latchPin, HIGH);     // take the latch pin high so the LEDs will light up:
+    delay(10);
+    digitalWrite(row[thisRow], HIGH); // take the row pin HIGH to turn off the whole row:
   }
+}
+
+// Calculate the leds who have to be on for this row
+int columnsForMatrix(int matrix, int row) {
+  int leds = 0;
+  for (int c = 0; c < 8; c++) {
+    if (HIGH == pixels[row][c + (matrix * 8)]) {
+      leds += ledState[c];
+    }
+  }
+  return leds;
 }
 
 void testLoop() {
