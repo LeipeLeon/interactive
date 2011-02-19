@@ -78,8 +78,9 @@ void refreshScreen() {
 
     digitalWrite(row[thisRow], LOW);  // take the row pin (cathodes) low:
     digitalWrite(latchPin, HIGH);     // take the latch pin high so the LEDs will light up:
-    delay(10);
+    delay(1);
     digitalWrite(row[thisRow], HIGH); // take the row pin HIGH to turn off the whole row:
+    delay(1);
   }
 }
 
