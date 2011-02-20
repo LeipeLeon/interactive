@@ -135,4 +135,19 @@ void testLoop() {
     // take the row pin low to turn off the whole row:
     digitalWrite(row[thisRow], HIGH);
   }
+  // use refreshScreen to traw testloop
+  for (int x = 0; x < 8; x++) {
+    for (int y = 0; y < 32; y++) {
+      pixels[x][y] = HIGH;
+      refreshScreen();
+      pixels[x][y] = LOW;
+    }
+  }
+  for (int y = 0; y < 32; y++) {
+    for (int x = 0; x < 8; x++) {
+      pixels[x][y] = HIGH;
+      refreshScreen();
+      pixels[x][y] = LOW;
+    }
+  }
 }
