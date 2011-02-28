@@ -1,0 +1,9 @@
+GEM
+  specs:
+    serialport (1.0.4)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  serialport
