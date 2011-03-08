@@ -18,11 +18,11 @@ int y = 5;
 
 // SPI communication
 // Pin connected to ST_CP of 74HC595 (12)
-int latchPin = 2;
+int latchPin = 8;
 // Pin connected to SH_CP of 74HC595 (11)
-int clockPin = 3;
+int clockPin = 7;
 // Pin connected to DS of 74HC595 (14)
-int dataPin  = 4;
+int dataPin  = 10;
 int ledState[8] = {1, 2, 4, 8, 16, 32, 64, 128 };
 
 void setup() {
