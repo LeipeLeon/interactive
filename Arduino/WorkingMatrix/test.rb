@@ -65,29 +65,45 @@ BITMAP_SPACE = [
   0b00000000
 ]
 
+@pixels = [
+  0b0000000000000000,
+  0b0000000000000000,
+  0b0000000000000000,
+  0b0000000000000000,
+  0b0000000000000000,
+  0b0000000000000000,
+  0b0000000000000000,
+  0b0000000000000000
+]
+
 
 def display_bitMap(map)
-  (0..7).each do |x|
-    data = map[x]
-    # puts data.to_i
-    7.downto(0).each do |y|
-      if (data & (1<<y)) > 0
-        print "X"
-      else
-        print "."
+  7.downto(0).each do |s|
+    (0..7).each do |r| # row
+      @pixels[r] = @pixels[r] << 1
+      data = map[r]
+      if (data & (1<<s)) > 0
+        @pixels[r] = @pixels[r] ^ 1
       end
+      15.downto(0).each do |y|
+        if (@pixels[r] & (1<<y)) > 0
+          print "X"
+        else
+          print "."
+        end
+      end
+      puts ""
     end
-    puts ""
   end
 end
 
 display_bitMap(BITMAP_H)
-# display_bitMap(BITMAP_E)
-# display_bitMap(BITMAP_L)
-# display_bitMap(BITMAP_L)
-# display_bitMap(BITMAP_O)
-# display_bitMap(BITMAP_SMILE)
-# display_bitMap(BITMAP_SPACE)
+display_bitMap(BITMAP_E)
+display_bitMap(BITMAP_L)
+display_bitMap(BITMAP_L)
+display_bitMap(BITMAP_O)
+display_bitMap(BITMAP_SMILE)
+display_bitMap(BITMAP_SPACE)
 
 
 
