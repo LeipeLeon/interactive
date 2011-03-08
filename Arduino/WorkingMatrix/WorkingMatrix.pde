@@ -47,15 +47,17 @@ void setup() {
       pixels[x][y] = LOW;
     }
   }
-  testLoop();
-  testloopHorizontal();
-  testloopVertical();
+//  testLoop();
+//  testloopHorizontal();
+//  testloopVertical();
 }
 
 void loop() {
-  // read input:
-  readSensors();
-  // draw the screen:
+  hello();
+//  // read input:
+//  readSensors();
+//  // draw the screen:
+//  refreshScreen();
 }
 
 void readSensors() {
