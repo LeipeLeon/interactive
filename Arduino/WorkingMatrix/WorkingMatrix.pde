@@ -43,20 +43,19 @@ void setup() {
 
   // initialize the pixel matrix:
   for (int x = 0; x < 8; x++) {
-    digitalWrite(row[x], HIGH);
     for (int y = 0; y < 32; y++) {
-      digitalWrite(col[y], LOW);
       pixels[x][y] = LOW;
     }
   }
   testLoop();
+  testloopHorizontal();
+  testloopVertical();
 }
 
 void loop() {
   // read input:
   readSensors();
   // draw the screen:
-  refreshScreen();
 }
 
 void readSensors() {
@@ -74,16 +73,13 @@ void refreshScreen() {
 
     digitalWrite(latchPin, LOW);      // ready up the 74HC595's to receive data
 
+    shiftOut(dataPin, clockPin, MSBFIRST, ledState[thisRow]); // send data for row
     shiftOut(dataPin, clockPin, MSBFIRST, columnsForMatrix(0, thisRow)); // send data for matrix 1 red
     shiftOut(dataPin, clockPin, MSBFIRST, columnsForMatrix(1, thisRow)); // send data for matrix 2 red
     shiftOut(dataPin, clockPin, MSBFIRST, columnsForMatrix(2, thisRow)); // send data for matrix 1 green
     shiftOut(dataPin, clockPin, MSBFIRST, columnsForMatrix(3, thisRow)); // send data for matrix 2 green
 
-    digitalWrite(row[thisRow], LOW);  // take the row pin (cathodes) low:
     digitalWrite(latchPin, HIGH);     // take the latch pin high so the LEDs will light up:
-    delay(1);
-    digitalWrite(row[thisRow], HIGH); // take the row pin HIGH to turn off the whole row:
-    delay(1);
   }
 }
 
