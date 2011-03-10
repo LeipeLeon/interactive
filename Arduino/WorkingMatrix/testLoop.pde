@@ -9,15 +9,15 @@ void testLoop() {
       shiftOut(dataPin, clockPin, MSBFIRST, ledState[thisRow]);
       // shift out the bits:
       if (thisCol < 8) {
+        shiftOut(dataPin, clockPin, MSBFIRST, 0);
         shiftOut(dataPin, clockPin, MSBFIRST, ledState[thisCol]);
-        shiftOut(dataPin, clockPin, MSBFIRST, 0);
-        shiftOut(dataPin, clockPin, MSBFIRST, 0);
-        shiftOut(dataPin, clockPin, MSBFIRST, 0);
+//        shiftOut(dataPin, clockPin, MSBFIRST, 0);
+//        shiftOut(dataPin, clockPin, MSBFIRST, 0);
       } else if (thisCol < 16) {
-        shiftOut(dataPin, clockPin, MSBFIRST, 0);
         shiftOut(dataPin, clockPin, MSBFIRST, ledState[thisCol - 8]);
         shiftOut(dataPin, clockPin, MSBFIRST, 0);
-        shiftOut(dataPin, clockPin, MSBFIRST, 0);
+//        shiftOut(dataPin, clockPin, MSBFIRST, 0);
+//        shiftOut(dataPin, clockPin, MSBFIRST, 0);
       } else if (thisCol < 24) {
         shiftOut(dataPin, clockPin, MSBFIRST, 0);
         shiftOut(dataPin, clockPin, MSBFIRST, 0);
@@ -31,28 +31,31 @@ void testLoop() {
       }
       //take the latch pin high so the LEDs will light up:
       digitalWrite(latchPin, HIGH);
-      delay(100);
+      delay(10);
     }
   }
 }
 
 void testloopHorizontal() {
-  for (int x = 0; x < 8; x++) {
-    for (int y = 0; y < 8; y++) {
-      pixels[x][y] = HIGH;
+  for (int x = 0; x < 8; x++) {     // set initial state
+    pixels[x] = 1;
+    for (byte y = 0; y < 16; y++) {   // for 2 matrices (2 * 8)
       refreshScreen();
-      pixels[x][y] = LOW;
+      pixels[x] <<= 1;
     }
+    pixels[x] = 0;
   }
 }
 
 void testloopVertical() {
-  for (int y = 0; y < 32; y++) {
+  int memo = 1;
+  for (int y = 0; y < 16; y++) {
     for (int x = 0; x < 8; x++) {
-      pixels[x][y] = HIGH;
+      pixels[x] = memo;
       refreshScreen();
-      pixels[x][y] = LOW;
+      pixels[x] = 0;
     }
+    memo <<= 1;
   }
 }
 

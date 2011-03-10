@@ -10,7 +10,7 @@ const int row[8] = {6,7,8,9,10,11,12,13};
 // on my matrix that's pin 1, 2, 3, 4, 21, 22, 23, 24
 
 // 2-dimensional array of pixels:
-int pixels[8][32];
+long pixels[8] = {0,0,0,0,0,0,0,0};
 
 // cursor position:
 int x = 5;
@@ -41,15 +41,10 @@ void setup() {
   pinMode(clockPin, OUTPUT);
   pinMode(dataPin,  OUTPUT);
 
-  // initialize the pixel matrix:
-  for (int x = 0; x < 8; x++) {
-    for (int y = 0; y < 32; y++) {
-      pixels[x][y] = LOW;
-    }
-  }
-//  testLoop();
-//  testloopHorizontal();
-//  testloopVertical();
+  // test the matrix
+  //  testLoop();
+  testloopHorizontal();
+  testloopVertical();
 }
 
 void loop() {
@@ -60,14 +55,14 @@ void loop() {
 //  refreshScreen();
 }
 
-void readSensors() {
-  // turn off the last position:
-  pixels[x][y] = LOW;
-  // read the sensors for X and Y values:
-  x = 7 - map(analogRead(A4), 0, 1023, 0, 7);
-  y =     map(analogRead(A5), 0, 1023, 0, 31);
-  pixels[x][y] = HIGH;
-}
+// void readSensors() {
+//   // turn off the last position:
+//   pixels[x][y] = LOW;
+//   // read the sensors for X and Y values:
+//   x = 7 - map(analogRead(A4), 0, 1023, 0, 7);
+//   y =     map(analogRead(A5), 0, 1023, 0, 31);
+//   pixels[x][y] = HIGH;
+// }
 
 void refreshScreen() {
   // iterate over the rows (anodes):
@@ -76,25 +71,16 @@ void refreshScreen() {
     digitalWrite(latchPin, LOW);      // ready up the 74HC595's to receive data
 
     shiftOut(dataPin, clockPin, MSBFIRST, ledState[thisRow]); // send data for row
-    shiftOut(dataPin, clockPin, MSBFIRST, columnsForMatrix(0, thisRow)); // send data for matrix 1 red
     shiftOut(dataPin, clockPin, MSBFIRST, columnsForMatrix(1, thisRow)); // send data for matrix 2 red
-    shiftOut(dataPin, clockPin, MSBFIRST, columnsForMatrix(2, thisRow)); // send data for matrix 1 green
-    shiftOut(dataPin, clockPin, MSBFIRST, columnsForMatrix(3, thisRow)); // send data for matrix 2 green
-
+    shiftOut(dataPin, clockPin, MSBFIRST, columnsForMatrix(0, thisRow)); // send data for matrix 1 red
+//    shiftOut(dataPin, clockPin, MSBFIRST, columnsForMatrix(2, thisRow)); // send data for matrix 1 green
+//    shiftOut(dataPin, clockPin, MSBFIRST, columnsForMatrix(3, thisRow)); // send data for matrix 2 green
     digitalWrite(latchPin, HIGH);     // take the latch pin high so the LEDs will light up:
   }
 }
 
 // Calculate the leds who have to be on for this row
 // TODO: refactor it for speed
-int columnsForMatrix(int matrix, int row) {
-  int leds = 0;
-  for (int c = 0; c < 8; c++) {
-    if (HIGH == pixels[row][c + (matrix * 8)]) {
-      leds += ledState[c];
-    }
-  }
-  return leds;
+byte columnsForMatrix(int matrix, int row) {
+  return pixels[row] >> (matrix * 8);
 }
-
-

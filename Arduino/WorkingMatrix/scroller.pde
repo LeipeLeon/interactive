@@ -57,24 +57,35 @@ byte SMILE[8] = {
 
 void scroller() {
   byte* letters[7] = { SMILE, H, E, L, L, O, SMILE };
-
-  for (int thisLetter = 0; thisLetter < 6; thisLetter++) {
-    scrollLetter(letters[thisLetter], letters[thisLetter+1]);
+  for (int thisLetter = 0; thisLetter < 7; thisLetter++) {
+    Serial.println("");
+    Serial.print("Letter: ");
+    Serial.print(thisLetter);
+    scrollLetter(letters[thisLetter]);
   }
-
 }
 
-void scrollLetter(byte* first, byte* second) {
-  for (int duration = 0; duration < 500; duration++) {
-    for (int thisRow = 0; thisRow < 8; thisRow++) {
-      digitalWrite(latchPin, LOW);      // ready up the 74HC595's to receive data
-      shiftOut(dataPin, clockPin, MSBFIRST, ledState[thisRow]); // send data for row
-      shiftOut(dataPin, clockPin, MSBFIRST, first[thisRow]); // send data for matrix 1 red
-      shiftOut(dataPin, clockPin, MSBFIRST, second[thisRow]); // send data for matrix 2 red
-  //    shiftOut(dataPin, clockPin, MSBFIRST, ~ first[thisRow]); // send data for matrix 1 green
-  //    shiftOut(dataPin, clockPin, MSBFIRST, ~ second[thisRow]); // send data for matrix 2 green
-
-      digitalWrite(latchPin, HIGH);     // take the latch pin high so the LEDs will light up:
+void scrollLetter(byte* letter) {
+  for (int shift = 7; shift >= 0; shift--) {
+    shiftPixels(letter, shift);
+    for (int shiftDuration = 0; shiftDuration < 50; shiftDuration++) {
+      refreshScreen();
     }
   }
+}
+
+void shiftPixels(byte* letter, int offset) {
+  for (int thisRow = 0; thisRow < 8; thisRow++) {
+    pixels[thisRow] <<= 1;
+    if (letter[thisRow] & (1 << offset)) {
+      pixels[thisRow]++;
+    }
+  }
+}
+
+void printPixelBuffer() {
+  for (int thisRow = 0; thisRow < 8; thisRow++) {
+    Serial.println(pixels[thisRow], BIN);
+  }
+  Serial.println("- - - - - - - - ");
 }
