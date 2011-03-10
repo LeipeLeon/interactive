@@ -3,12 +3,12 @@
 int sensorShiftDuration = 50;
 
 void scroller() {
-  byte* letters[7] = { SMILE, H, E, L, L, O, SMILE };
+  byte letters[7] = { 1, 72, 101, 108, 108, 111, 2 };
   for (int thisLetter = 0; thisLetter < 7; thisLetter++) {
     Serial.println("");
     Serial.print("Letter: ");
     Serial.print(thisLetter);
-    scrollLetter(letters[thisLetter]);
+    scrollLetter(my_chars[letters[thisLetter]]);
   }
 }
 
