@@ -48,7 +48,8 @@ void setup() {
 }
 
 void loop() {
-  scroller();
+//   scroller();
+  scroller2();
 //  // read input:
 //  readSensors();
 //  // draw the screen:

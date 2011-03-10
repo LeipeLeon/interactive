@@ -2,61 +2,6 @@
 
 int sensorShiftDuration = 50;
 
-byte H[8] = {
-  B00000000,
-  B01100110,
-  B01100110,
-  B01100110,
-  B01111110,
-  B01100110,
-  B01100110,
-  B00000000
-};
-
-byte E[8] = {
-  B00000000,
-  B01111110,
-  B01100000,
-  B01111000,
-  B01100000,
-  B01100000,
-  B01111110,
-  B00000000
-};
-
-byte L[8] = {
-  B00000000,
-  B01100000,
-  B01100000,
-  B01100000,
-  B01100000,
-  B01100000,
-  B01111110,
-  B00000000
-};
-
-byte O[8] = {
-  B00000000,
-  B01111110,
-  B01100110,
-  B01100110,
-  B01100110,
-  B01100110,
-  B01111110,
-  B00000000
-};
-
-byte SMILE[8] = {
-  B00000000,
-  B01100110,
-  B01100110,
-  B00000000,
-  B01000010,
-  B00111100,
-  B00000000,
-  B00000000
-};
-
 void scroller() {
   byte* letters[7] = { SMILE, H, E, L, L, O, SMILE };
   for (int thisLetter = 0; thisLetter < 7; thisLetter++) {
@@ -64,6 +9,16 @@ void scroller() {
     Serial.print("Letter: ");
     Serial.print(thisLetter);
     scrollLetter(letters[thisLetter]);
+  }
+}
+
+void scroller2() {
+  String display_txt = "Hello World! ";
+  for (int thisLetter = 0; thisLetter < display_txt.length(); thisLetter++) {
+    Serial.println("");
+    Serial.print("Letter: ");
+    Serial.print(display_txt[thisLetter]);
+    scrollLetter(my_chars[display_txt[thisLetter]]);
   }
 }
 
@@ -82,6 +37,8 @@ void shiftPixels(byte* letter, int offset) {
     pixels[thisRow] <<= 1;
     if (letter[thisRow] & (1 << offset)) {
       pixels[thisRow]++;
+    } else {
+      delay(1);
     }
   }
 }
@@ -94,5 +51,5 @@ void printPixelBuffer() {
 }
 
 void readSensors() {
-  sensorShiftDuration = map(analogRead(A4), 0, 1023, 10, 1023);
+  sensorShiftDuration = map(analogRead(A4), 0, 1023, 5, 100);
 }
