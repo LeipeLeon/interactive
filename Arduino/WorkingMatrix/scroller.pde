@@ -1,5 +1,7 @@
 #include <avr/pgmspace.h>
 
+int sensorShiftDuration = 50;
+
 byte H[8] = {
   B00000000,
   B01100110,
@@ -68,7 +70,8 @@ void scroller() {
 void scrollLetter(byte* letter) {
   for (int shift = 7; shift >= 0; shift--) {
     shiftPixels(letter, shift);
-    for (int shiftDuration = 0; shiftDuration < 50; shiftDuration++) {
+    for (int shiftDuration = 0; shiftDuration < sensorShiftDuration; shiftDuration++) {
+      readSensors();
       refreshScreen();
     }
   }
@@ -88,4 +91,8 @@ void printPixelBuffer() {
     Serial.println(pixels[thisRow], BIN);
   }
   Serial.println("- - - - - - - - ");
+}
+
+void readSensors() {
+  sensorShiftDuration = map(analogRead(A4), 0, 1023, 10, 1023);
 }
