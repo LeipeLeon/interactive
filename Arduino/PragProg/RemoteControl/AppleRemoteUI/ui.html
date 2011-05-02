@@ -1,0 +1,57 @@
+<!--
+ ! Excerpted from "Arduino: A Quick-Start Guide",
+ ! published by The Pragmatic Bookshelf.
+ ! Copyrights apply to this code. It may not be used to create training material, 
+ ! courses, books, articles, and the like. Contact us if you are in doubt.
+ ! We make no guarantees that this code is fit for any purpose. 
+ ! Visit http://www.pragmaticprogrammer.com/titles/msard for more book information.
+-->
+<html>
+  <title>Apple Remote Emulator</title>
+  <head>
+    <script type="text/javascript"> 
+      var serial;
+  
+      function setup() {
+        serial = (document.getElementById("seriality")).Seriality();
+        alert(serial.ports.join("\n"));
+        serial.begin(serial.ports[0], 9600);
+      }
+    </script> 
+  </head>
+
+  <body onload="setup();">
+    <object type="application/Seriality"
+            id="seriality" 
+            width="0" 
+            height="0">
+    </object>
+    <h2>Apple Remote Emulator</h2>
+    <form>
+      <button type="button" onclick="serial.write('m');">
+        Menu
+      </button>
+      <br/>
+      <button type="button" onclick="serial.write('u');">
+        Up
+      </button>
+      <br/>
+      <button type="button" onclick="serial.write('d');">
+        Down
+      </button>
+      <br/>
+      <button type="button" onclick="serial.write('l');">
+        Previous
+      </button>
+      <br/>
+      <button type="button" onclick="serial.write('n');">
+        Next
+      </button>
+      <br/>
+      <button type="button" onclick="serial.write('p');">
+        Play
+      </button>
+      <br/>
+    </form>
+  </body>
+</html>
