@@ -1,10 +1,16 @@
 class Pong
 
   attr :matrix
+  attr :lr
+  attr :rl
 
   def initialize
     setup_matrix
     @matrix[4][4] = 1
+  end
+
+  def tick
+    find_a_way
   end
 
   def left_bar
@@ -21,6 +27,10 @@ class Pong
         cols == 0 ? '.' : 'X'
       }.join('')
     }.join("\n")
+  end
+
+  def find_a_way
+    rand(3).to_i.-1
   end
 
 private
@@ -61,6 +71,24 @@ describe Pong do
 ........
 ........
 ........")
+  end
+
+  it "starts and goes to the left" do
+    subject.tick
+    subject.should_receive(:find_a_way).and_return(0)
+    subject.print_matrix.should eql("........
+........
+........
+........
+...X....
+........
+........
+........")
+  end
+
+  it "should find the next step" do
+    subject.find_a_way.should < 2
+    subject.find_a_way.should > -2
   end
 
 end
